@@ -1,0 +1,88 @@
+---
+title: "Macierz przejść"
+author: "PBi"
+date: "1 November 2015"
+output: html_document
+---
+
+Przygotuj macierz przejść.
+
+```{r, fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
+library('igraph')
+source("http://michael.hahsler.net/SMU/ScientificCompR/code/map.R")
+
+load("all.rda")
+all <- as.data.frame(all)
+kluby <- unique(all$klub)
+osoby <- unique(all$lista)
+
+mat <- matrix(0, length(kluby), length(kluby))
+rownames(mat) <- kluby
+colnames(mat) <- kluby
+
+for (i in seq_along(osoby)) {
+  tmp <- all[all$lista == osoby[i],]
+  if (nrow(tmp) > 1) {
+    for (j in 2:nrow(tmp)) {
+      mat[tmp$klub[j-1], tmp$klub[j]] <- mat[tmp$klub[j-1], tmp$klub[j]] + 1
+    }
+  }
+}
+
+# Skróć nazwy klubów
+colnames(mat) <- gsub(colnames(mat), pattern="[^A-Z]", replacement = "")
+rownames(mat) <- gsub(rownames(mat), pattern="[^A-Z]", replacement = "")
+```
+
+
+# Plots
+
+```{r, fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
+g <- graph.adjacency(mat) 
+plot(g)
+
+plot(g, layout=layout.fruchterman.reingold,
+     vertex.size=map(betweenness(g),c(1,15)),
+     edge.width=map(edge.betweenness(g), c(1,10)))
+
+plot(g, layout=layout.circle,
+     vertex.size=map(betweenness(g),c(1,20)),
+     edge.width=map(edge.betweenness(g), c(0.5,5)),
+     edge.arrow.size=.2)
+
+plot(g, layout=layout.kamada.kawai,
+     vertex.size=map(betweenness(g),c(1,15)),
+     edge.width=map(edge.betweenness(g), c(1,10)),
+     edge.arrow.size=.2)
+
+```
+
+# Usuń rzadkie wiersze/kolumny
+
+```{r, fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
+ind <- colSums(mat) + rowSums(mat) > 9
+mat2 <- mat[ind, ind]
+
+g <- graph.adjacency(mat2) 
+plot(g)
+
+plot(g, layout=layout.fruchterman.reingold,
+     vertex.size=map(betweenness(g),c(1,15)),
+     edge.width=map(edge.betweenness(g), c(1,10)))
+
+plot(g, layout=layout.circle,
+     vertex.size=map(betweenness(g),c(1,20)),
+     edge.width=map(edge.betweenness(g), c(0.5,5)),
+     edge.arrow.size=.2)
+
+plot(g, layout=layout.kamada.kawai,
+     vertex.size=map(betweenness(g),c(1,15)),
+     edge.width=map(edge.betweenness(g), c(1,10)),
+     edge.arrow.size=.2)
+
+plot(g, layout=layout.mds,
+     vertex.size=map(betweenness(g),c(1,15)),
+     edge.width=map(edge.betweenness(g), c(1,10)),
+     edge.arrow.size=.2)
+
+```
