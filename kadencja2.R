@@ -8,7 +8,7 @@ library(sqldf)
 url <- "https://pl.wikipedia.org/wiki/Pos%C5%82owie_na_Sejm_Rzeczypospolitej_Polskiej_II_kadencji"
 lista <- html_text(html_nodes(read_html(url), ".wikitable li a , p+ .wikitable th"))
 kluby <- read_html(url) %>% html_nodes("p+ .wikitable th") %>% html_text
-df <- data.frame(kadencja="II",etap="start",lista, klub="", stringsAsFactors = FALSE)
+df <- data.frame(kadencja="2",etap="end",lista, klub="", stringsAsFactors = FALSE)
 
 #przypisanie klubu do posła na podstawie ostatniego wystąpienie nazwy klubu
 ostatni_klub = ""
@@ -29,20 +29,20 @@ df <- df %>%
 for(j in 1:length(df$lista)){
   if (grepl("\\[*\\]", df$lista[j])) {
     df$klub[j] <- df$lista[j]
-    df$etap[j] <- "end"
+    df$etap[j] <- "start"
   }
 }
 
 #generowanie zestawienia z wierszami zawierającymi przypisy
-przypisy <- df %>%
-  filter(grepl("\\[*\\]", lista)) %>%
-  group_by(lista) %>%
-  summarise(poprzedni = n()) 
+#przypisy <- df %>%
+#  filter(grepl("\\[*\\]", lista)) %>%
+#  group_by(lista) %>%
+#  summarise(poprzedni = n()) 
 
-przypisy[,2] =""
+#przypisy[,2] =""
 
 #eksport do zewnętrznego pliku -> tam edycja -> import danych
-write.csv(przypisy, "przypisy_2K.csv")
+#write.csv(przypisy, "przypisy_2K.csv")
 przypisy <- read.csv("przypisy_2K.csv", sep=",")
 
 #podmiana wartości przypisów na klub po zmianie
@@ -61,7 +61,7 @@ df <- df %>%
 
 #usuwamy rekordy z przypisami, które nie informują o zmianie klubu
 df <- df %>%
-  filter(!grepl("\\[*\\]", klub))
+  filter(!grepl("^\\[.|..\\]$", klub))
 
 #podmiana przypisu na własciwe nazwisko na liście
 for(l in 1:length(df$lista)){
@@ -93,6 +93,6 @@ df <- rbind(df.new,df %>%
                    filter(n() > 1)) 
 
 df_2K <- df %>%
-  arrange(lista, etap)
+  arrange(lista, desc(etap))
 
 rm(df.new)
