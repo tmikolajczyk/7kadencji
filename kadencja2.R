@@ -27,7 +27,7 @@ df <- df %>%
 
 #przerzucenie wartości przypisu do kolumny 'klub'
 for(j in 1:length(df$lista)){
-  if (grepl("\\[*\\]", df$lista[j])) {
+  if (grepl("^\\[.\\]|\\[..\\]$", df$lista[j])) {
     df$klub[j] <- df$lista[j]
     df$etap[j] <- "start"
   }
@@ -35,7 +35,7 @@ for(j in 1:length(df$lista)){
 
 #generowanie zestawienia z wierszami zawierającymi przypisy
 #przypisy <- df %>%
-#  filter(grepl("\\[*\\]", lista)) %>%
+#  filter(grepl("^\\[.\\]|\\[..\\]$", lista)) %>%
 #  group_by(lista) %>%
 #  summarise(poprzedni = n()) 
 
@@ -61,11 +61,11 @@ df <- df %>%
 
 #usuwamy rekordy z przypisami, które nie informują o zmianie klubu
 df <- df %>%
-  filter(!grepl("^\\[.|..\\]$", klub))
+  filter(!grepl("^\\[.\\]|\\[..\\]$", klub))
 
 #podmiana przypisu na własciwe nazwisko na liście
 for(l in 1:length(df$lista)){
-  if (grepl("\\[*\\]", df$lista[l])){
+  if (grepl("^\\[.\\]|\\[..\\]$", df$lista[l])){
     df[l, 'lista'] <- df[l-1, 'lista']
   }
 }
