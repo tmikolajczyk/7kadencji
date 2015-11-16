@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>SANKEY Experiment</title>
-<!-- http://bl.ocks.org/d3noob/c9b90689c1438f57d649 -->
 <style>
 
 .node rect {
@@ -37,8 +36,8 @@
 var units = "Widgets";
 
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
-    width = 700 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    width = 1200 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
 var formatNumber = d3.format(",.0f"),    // zero decimal places
     format = function(d) { return formatNumber(d) + " " + units; },
@@ -61,18 +60,22 @@ var sankey = d3.sankey()
 var path = sankey.link();
 
 // load the data (using the timelyportfolio csv method)
-d3.csv("lib/sankey.csv", function(error, data) {
+d3.csv("przejscia.csv", function(error, data) {
 
   //set up graph in same style as original example but empty
   graph = {"nodes" : [], "links" : []};
 
     data.forEach(function (d) {
+
       graph.nodes.push({ "name": d.source });
       graph.nodes.push({ "name": d.target });
       graph.links.push({ "source": d.source,
                          "target": d.target,
                          "value": +d.value });
      });
+
+    console.log('graph.nodes', graph.nodes);
+    console.log('graph.links', graph.links);
 
      // return only the distinct / unique nodes
      graph.nodes = d3.keys(d3.nest()
@@ -94,7 +97,7 @@ d3.csv("lib/sankey.csv", function(error, data) {
   sankey
     .nodes(graph.nodes)
     .links(graph.links)
-    .layout(32);
+    .layout(200);
 
 // add in the links
   var link = svg.append("g").selectAll(".link")
