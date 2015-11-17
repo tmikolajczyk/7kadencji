@@ -37,7 +37,7 @@ var units = "Widgets";
 
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = 1200 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom;
+    height = 3800 - margin.top - margin.bottom;
 
 var formatNumber = d3.format(",.0f"),    // zero decimal places
     format = function(d) { return formatNumber(d) + " " + units; },
@@ -74,9 +74,6 @@ d3.csv("przejscia.csv", function(error, data) {
                          "value": +d.value });
      });
 
-    console.log('graph.nodes', graph.nodes);
-    console.log('graph.links', graph.links);
-
      // return only the distinct / unique nodes
      graph.nodes = d3.keys(d3.nest()
        .key(function (d) { return d.name; })
@@ -97,7 +94,10 @@ d3.csv("przejscia.csv", function(error, data) {
   sankey
     .nodes(graph.nodes)
     .links(graph.links)
-    .layout(200);
+    .layout(2000);
+
+  console.log("sankey.nodes()", sankey.nodes());
+  console.log("sankey.links()", sankey.links());
 
 // add in the links
   var link = svg.append("g").selectAll(".link")
