@@ -36,8 +36,8 @@
 var units = "Widgets";
 
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
-    width = 1200 - margin.left - margin.right,
-    height = 3800 - margin.top - margin.bottom;
+    width = 1800 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
 var formatNumber = d3.format(",.0f"),    // zero decimal places
     format = function(d) { return formatNumber(d) + " " + units; },
@@ -54,7 +54,7 @@ var svg = d3.select("#chart").append("svg")
 // Set the sankey diagram properties
 var sankey = d3.sankey()
     .nodeWidth(36)
-    .nodePadding(40)
+    .nodePadding(5)
     .size([width, height]);
 
 var path = sankey.link();
@@ -95,6 +95,12 @@ d3.csv("przejscia.csv", function(error, data) {
     .nodes(graph.nodes)
     .links(graph.links)
     .layout(2000);
+
+  graph.nodes.forEach(function (d) {
+    d.x = (width/8) * parseFloat(d.name.slice(-4, -1));
+  });
+
+  sankey.relayout2();
 
   console.log("sankey.nodes()", sankey.nodes());
   console.log("sankey.links()", sankey.links());
