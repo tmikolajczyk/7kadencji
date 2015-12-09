@@ -7,13 +7,31 @@ var svg = d3.select("#chart").append("svg")
    .attr("width", width)
    .attr("height", height);
 
-d3.csv("liczebnosci_kadencje.csv", function (error, data) {
-  data.forEach(function (d) { d.liczba = +d.liczba; });
-  main(data);
-});
+d3.csv("liczebnosci_kadencje.csv", function (nodeError, nodeData) {
+  nodeData.forEach(function (d) { d.liczba = +d.liczba; });
+  var nodeToIndex = _(nodeData)
+    .map(function (d, i) {
+      // warning: floats can be sensitive
+      return [d.klub + " (" + d.kadencja_ef + ")", i];
+    })
+    .zipObject()
+    .value();
 
+  d3.csv("przejscia.csv", function (linkError, linkData) {
+    linkData = linkData.map(function (d) {
+      return {
+        value:  +d.value,
+        source: nodeData[nodeToIndex[d.source]],
+        target: nodeData[nodeToIndex[d.target]],
+      };
+    });
+    main(nodeData, linkData);
+  });});
 
-function main (partyCount) {
+function main (partyCount, transitionLinks) {
+
+  console.log("partyCount", partyCount);
+  console.log("transitionLinks", transitionLinks);
 
   partyCount = _.sortBy(partyCount, "klub");
 
