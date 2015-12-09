@@ -76,14 +76,16 @@ function main (partyCount, transitionLinks) {
     .selectAll(".flow")
     .data(transitionLinks);
 
-  flows.enter().append("line")
-    .attr("x1", function (d) { return d.source.x + barWidth / 2; })
-    .attr("y1", function (d) { return d.source.y + d.source.height / 2; })
-    .attr("x2", function (d) { return d.target.x + barWidth / 2; })
-    .attr("y2", function (d) { return d.target.y + d.target.height / 2; })
-    .style("stroke-width", function (d) { return scaleY(d.value) - scaleY(0); })
-    .style("stroke", function (d) { return d.target.kolor; })
-    .style("opacity", 0.5);
+  flows.enter().append("path")
+    .attr("d", function (d) {
+      return "M " + (d.source.x + barWidth) + " " + (d.source.y) +
+        " L " + (d.target.x) + " " + (d.target.y) +
+        " v " + (scaleY(d.value) - scaleY(0)) +
+        " L " + (d.source.x + barWidth) + " " + (d.source.y + scaleY(d.value) - scaleY(0)) +
+        " Z";
+    })
+    .style("fill", function (d) { return d.target.kolor; })
+    .style("opacity", 0.4);
 
     // NEXT STEPS:
     // drawing transitions
