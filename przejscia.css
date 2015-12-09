@@ -25,6 +25,11 @@
     stroke-width: 1px;
 }
 
+.flow {
+    opacity: 0.4;
+    stroke: none;
+}
+
 div.tooltip
 {
     position: absolute;

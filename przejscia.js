@@ -33,6 +33,8 @@ function main (partyCount, transitionLinks) {
   console.log("partyCount", partyCount);
   console.log("transitionLinks", transitionLinks);
 
+  var tooltip = new Tooltip("#chart");
+
   partyCount = _.sortBy(partyCount, "klub");
 
   var cumulativePerTerm = {};
@@ -70,6 +72,17 @@ function main (partyCount, transitionLinks) {
     })
     .on("click", function (d) {
       console.log(d);
+    })
+    .on("mouseover", function (d) {
+      d3.select(this).style("opacity", 0.9);
+      tooltip.show(
+        d.kadencja_ef + " kadencja<br>" +
+        d.klub + "<br>" +
+        d.liczba + " posłów");
+    })
+    .on("mouseout", function (d) {
+      d3.select(this).style("opacity", null);
+      tooltip.out();
     });
 
   var flows = svg
@@ -77,6 +90,7 @@ function main (partyCount, transitionLinks) {
     .data(transitionLinks);
 
   flows.enter().append("path")
+    .attr("class", "flow")
     .attr("d", function (d) {
       return "M " + (d.source.x + barWidth) + " " + (d.source.y) +
         " L " + (d.target.x) + " " + (d.target.y) +
@@ -85,7 +99,18 @@ function main (partyCount, transitionLinks) {
         " Z";
     })
     .style("fill", function (d) { return d.target.kolor; })
-    .style("opacity", 0.4);
+    .on("mouseover", function (d) {
+      d3.select(this).style("opacity", 0.7);
+      tooltip.show(
+        "przejścia " + d.source.kadencja_ef + "-" + d.target.kadencja_ef + " kadencji<br>" +
+        "z: " + d.source.klub + "<br>" +
+        "do: " + d.target.klub + "<br>" +
+        d.value + " posłów");
+    })
+    .on("mouseout", function (d) {
+      d3.select(this).style("opacity", null);
+      tooltip.out();
+    });
 
     // NEXT STEPS:
     // drawing transitions
