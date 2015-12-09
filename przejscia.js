@@ -56,14 +56,14 @@ function main (partyCount, transitionLinks) {
   bars.enter().append("rect")
     .attr("class", "bar")
     .attr("x", function (d) {
-      return scaleX(+d.kadencja_ef);
+      return d.x = scaleX(+d.kadencja_ef);
     })
     .attr("y", function (d) {
-      return scaleY(d.cumulative);
+      return d.y = scaleY(d.cumulative);
     })
     .attr("width", barWidth)
     .attr("height", function (d) {
-      return scaleY(d.liczba) - scaleY(0);
+      return d.height = scaleY(d.liczba) - scaleY(0);
     })
     .style("fill", function (d) {
       return d.kolor;
@@ -72,6 +72,18 @@ function main (partyCount, transitionLinks) {
       console.log(d);
     });
 
+  var flows = svg
+    .selectAll(".flow")
+    .data(transitionLinks);
+
+  flows.enter().append("line")
+    .attr("x1", function (d) { return d.source.x + barWidth / 2; })
+    .attr("y1", function (d) { return d.source.y + d.source.height / 2; })
+    .attr("x2", function (d) { return d.target.x + barWidth / 2; })
+    .attr("y2", function (d) { return d.target.y + d.target.height / 2; })
+    .style("stroke-width", function (d) { return scaleY(d.value) - scaleY(0); })
+    .style("stroke", function (d) { return d.target.kolor; })
+    .style("opacity", 0.5);
 
     // NEXT STEPS:
     // drawing transitions
