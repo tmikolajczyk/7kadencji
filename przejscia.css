@@ -30,6 +30,13 @@
     stroke: none;
 }
 
+.kadencja {
+    font-family: sans-serif;
+    font-size: 12px;
+    text-anchor: middle;
+    cursor: default;
+}
+
 div.tooltip
 {
     position: absolute;

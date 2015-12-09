@@ -43,12 +43,14 @@ function main (partyCount, transitionLinks) {
     cumulativePerTerm[d.kadencja_ef] = (cumulativePerTerm[d.kadencja_ef] || 0) + d.liczba;
   });
 
+  var maxPoslow = d3.max(partyCount, function (d) { return d.cumulative});
+
   var scaleX = d3.scale.linear()
     .domain([0, 8])
     .range([margin, width - margin]);
 
   var scaleY = d3.scale.linear()
-    .domain([0, 500])
+    .domain([0, maxPoslow])
     .range([margin, height - margin]);
 
   var bars = svg
@@ -112,8 +114,16 @@ function main (partyCount, transitionLinks) {
       tooltip.out();
     });
 
+    svg.selectAll(".kadencja")
+      .data(_.range(1, 8))
+      .enter()
+      .append("text")
+        .attr("class", "kadencja")
+        .attr("x", function (d) { return scaleX(d + 0.25) + barWidth / 2; })
+        .attr("y", height - margin + 20)
+        .text(function (d) { return "" + d + " kadencja"});
+
     // NEXT STEPS:
-    // drawing transitions
     // a function for moving parties up/down
 
 }
