@@ -93,22 +93,21 @@ function main (partyCount, transitionLinks) {
 
   var controlDist = 20;
 
+  // warning: it mostly works, but has a few pathologies
   flows.enter().append("path")
     .attr("class", "flow")
     .attr("d", function (d) {
-      return "M " + (d.source.x + barWidth) + " " + (d.source.y) +
-        " C " + // quadratic Bazier
-        (d.source.x + barWidth + controlDist) + "," + (d.source.y) + // control 1
-        " " + (d.target.x - controlDist) + "," + (d.target.y) + // control 2
-        " " + (d.target.x) + "," + (d.target.y) +
-        " v " + (scaleY(d.value) - scaleY(0)) +
-        " C " + // quadratic Bazier
-        (d.target.x - controlDist) + "," + (d.target.y + scaleY(d.value) - scaleY(0)) + // control 1
-        " " + (d.source.x + barWidth + controlDist) + "," + (d.source.y + scaleY(d.value) - scaleY(0)) + // control 2
-        " " + (d.source.x + barWidth) + " " + (d.source.y + scaleY(d.value) - scaleY(0)) +
-        " Z";
+      var x1 = d.source.x + barWidth;
+      var y1 = d.source.y + d.source.height / 2;
+      var x2 = d.target.x;
+      var y2 = d.target.y + d.target.height / 2
+      return "M" + x1 + " " + y1
+           + "C" + (x1 + controlDist) + "," + y1
+           + " " + (x2 - controlDist) + "," + y2
+           + " " + x2 + "," + y2;
     })
-    .style("fill", function (d) { return d.target.kolor; })
+    .style("stroke", function (d) { return d.target.kolor; })
+    .style("stroke-width", function (d) { return scaleY(d.value) - scaleY(0); })
     .on("mouseover", function (d) {
       d3.select(this).style("opacity", 0.7);
       tooltip.show(
