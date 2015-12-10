@@ -91,13 +91,21 @@ function main (partyCount, transitionLinks) {
     .selectAll(".flow")
     .data(transitionLinks);
 
+  var controlDist = 20;
+
   flows.enter().append("path")
     .attr("class", "flow")
     .attr("d", function (d) {
       return "M " + (d.source.x + barWidth) + " " + (d.source.y) +
-        " L " + (d.target.x) + " " + (d.target.y) +
+        " C " + // quadratic Bazier
+        (d.source.x + barWidth + controlDist) + "," + (d.source.y) + // control 1
+        " " + (d.target.x - controlDist) + "," + (d.target.y) + // control 2
+        " " + (d.target.x) + "," + (d.target.y) +
         " v " + (scaleY(d.value) - scaleY(0)) +
-        " L " + (d.source.x + barWidth) + " " + (d.source.y + scaleY(d.value) - scaleY(0)) +
+        " C " + // quadratic Bazier
+        (d.target.x - controlDist) + "," + (d.target.y + scaleY(d.value) - scaleY(0)) + // control 1
+        " " + (d.source.x + barWidth + controlDist) + "," + (d.source.y + scaleY(d.value) - scaleY(0)) + // control 2
+        " " + (d.source.x + barWidth) + " " + (d.source.y + scaleY(d.value) - scaleY(0)) +
         " Z";
     })
     .style("fill", function (d) { return d.target.kolor; })
