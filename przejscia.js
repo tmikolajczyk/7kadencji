@@ -1,7 +1,7 @@
 var margin = 50;
 var width = 1200;
 var height = 600;
-var barWidth = 30;
+var barWidth = 10;
 
 var svg = d3.select("#chart").append("svg")
    .attr("width", width)
@@ -94,6 +94,8 @@ function main (partyCount, transitionLinks) {
   var controlDist = 20;
 
   // warning: it mostly works, but has a few pathologies
+  // either conditions for fill-not-stroke for broad transitions
+  // or very thin barWidth
   flows.enter().append("path")
     .attr("class", "flow")
     .attr("d", function (d) {
