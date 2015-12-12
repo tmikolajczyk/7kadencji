@@ -46,7 +46,7 @@ function main (partyCount, transitionLinks) {
   var maxPoslow = d3.max(partyCount, function (d) { return d.cumulative});
 
   var scaleX = d3.scale.linear()
-    .domain([0, 8])
+    .domain([0, 9])
     .range([margin, width - margin]);
 
   var scaleY = d3.scale.linear()
@@ -124,13 +124,13 @@ function main (partyCount, transitionLinks) {
     });
 
     svg.selectAll(".kadencja")
-      .data(_.range(1, 8))
+      .data(_.range(1, 9))
       .enter()
       .append("text")
         .attr("class", "kadencja")
         .attr("x", function (d) { return scaleX(d + 0.25) + barWidth / 2; })
         .attr("y", height - margin + 20)
-        .text(function (d) { return "" + d + " kadencja"});
+        .text(function (d) { return "" + d + ". kadencja"});
 
     // NEXT STEPS:
     // a function for moving parties up/down
