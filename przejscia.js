@@ -132,7 +132,48 @@ function main (partyCount, transitionLinks) {
         .attr("y", height - margin + 20)
         .text(function (d) { return "" + d + ". kadencja"});
 
-    // NEXT STEPS:
-    // a function for moving parties up/down
+    var drag = d3.behavior.drag()
+      .origin(function(d) { return d; })
+      .on("dragstart", function (d) {
+        d.dragged = true;
+        d3.select(this)
+          .attr("x", d.x += barWidth);
+      })
+      .on("drag", function (d) {
+        d3.select(this)
+          .attr("y", d.y = d3.event.y);
+      })
+      .on("dragend", function (d) {
+        d3.select(this)
+          .attr("x", d.x -= barWidth);
+
+        _(partyCount)
+          .filter(function (c) { return c.kadencja_ef === d.kadencja_ef})
+          .forEach(function (c) { c.order = c.dragged ? c.y : c.y + c.height / 2})
+          .sortBy("order")
+          .reduce(function (a, b) {
+            b.cumulative = a;
+            return a + b.liczba;
+          }, 0);
+
+        d.dragged = false;
+
+        bars.attr("y", function (c) {
+          return c.y = scaleY(c.cumulative);
+        });
+
+        flows.attr("d", function (c) {
+          var x1 = c.source.x + barWidth;
+          var y1 = c.source.y + c.source.height / 2;
+          var x2 = c.target.x;
+          var y2 = c.target.y + c.target.height / 2
+          return "M" + x1 + " " + y1
+               + "C" + (x1 + controlDist) + "," + y1
+               + " " + (x2 - controlDist) + "," + y2
+               + " " + x2 + "," + y2;
+        });
+      })
+
+    bars.call(drag);
 
 }
