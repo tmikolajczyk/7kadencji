@@ -37,11 +37,29 @@ function main (partyCount, transitionLinks) {
 
   partyCount = _.sortBy(partyCount, "klub");
 
+  var t;
+
   var cumulativePerTerm = {};
   partyCount.forEach(function (d) {
     d.cumulative = cumulativePerTerm[d.kadencja_ef] || 0;
     cumulativePerTerm[d.kadencja_ef] = (cumulativePerTerm[d.kadencja_ef] || 0) + d.liczba;
   });
+
+  cumulativePerTerm = {};
+  _.sortBy(transitionLinks, "source.klub")
+    .forEach(function (d) {
+      t = d.target.klub + " " + d.target.kadencja_ef;
+      d.cumulativeRight = cumulativePerTerm[t] || 0;
+      cumulativePerTerm[t] = (cumulativePerTerm[t] || 0) + d.value;
+    });
+
+  cumulativePerTerm = {};
+  _.sortBy(transitionLinks, "target.klub")
+    .forEach(function (d) {
+      t = d.source.klub + " " + d.source.kadencja_ef;
+      d.cumulativeLeft = cumulativePerTerm[t] || 0;
+      cumulativePerTerm[t] = (cumulativePerTerm[t] || 0) + d.value;
+    });
 
   var maxPoslow = d3.max(partyCount, function (d) { return d.cumulative});
 
@@ -100,9 +118,9 @@ function main (partyCount, transitionLinks) {
     .attr("class", "flow")
     .attr("d", function (d) {
       var x1 = d.source.x + barWidth;
-      var y1 = d.source.y + d.source.height / 2;
+      var y1 = d.source.y + scaleY(d.cumulativeLeft) - scaleY(0) + (scaleY(d.value) - scaleY(0)) / 2;
       var x2 = d.target.x;
-      var y2 = d.target.y + d.target.height / 2
+      var y2 = d.target.y + scaleY(d.cumulativeRight) - scaleY(0) + (scaleY(d.value) - scaleY(0)) / 2;
       return "M" + x1 + " " + y1
            + "C" + (x1 + controlDist) + "," + y1
            + " " + (x2 - controlDist) + "," + y2
@@ -164,9 +182,9 @@ function main (partyCount, transitionLinks) {
 
         flows.attr("d", function (c) {
           var x1 = c.source.x + barWidth;
-          var y1 = c.source.y + c.source.height / 2;
+          var y1 = c.source.y + scaleY(c.cumulativeLeft) - scaleY(0) + (scaleY(c.value) - scaleY(0)) / 2;
           var x2 = c.target.x;
-          var y2 = c.target.y + c.target.height / 2
+          var y2 = c.target.y + scaleY(c.cumulativeRight) - scaleY(0) + (scaleY(c.value) - scaleY(0)) / 2;
           return "M" + x1 + " " + y1
                + "C" + (x1 + controlDist) + "," + y1
                + " " + (x2 - controlDist) + "," + y2
