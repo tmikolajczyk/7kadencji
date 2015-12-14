@@ -155,7 +155,8 @@ function main (partyCount, transitionLinks) {
       .on("dragstart", function (d) {
         d.dragged = true;
         d3.select(this)
-          .attr("x", d.x += barWidth);
+          .transition().duration(500)
+            .attr("x", d.x += barWidth);
       })
       .on("drag", function (d) {
         d3.select(this)
@@ -163,7 +164,8 @@ function main (partyCount, transitionLinks) {
       })
       .on("dragend", function (d) {
         d3.select(this)
-          .attr("x", d.x -= barWidth);
+          .transition().duration(500)
+            .attr("x", d.x -= barWidth);
 
         _(partyCount)
           .filter(function (c) { return c.kadencja_ef === d.kadencja_ef})
