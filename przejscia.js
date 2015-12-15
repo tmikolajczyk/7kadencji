@@ -176,11 +176,29 @@ function main (partyCount, transitionLinks) {
             return a + b.liczba;
           }, 0);
 
-        d.dragged = false;
-
         bars.attr("y", function (c) {
           return c.y = scaleY(c.cumulative);
         });
+
+        cumulativePerTerm = {};
+        _(transitionLinks)
+          .sortBy("source.y")
+          .forEach(function (c) {
+            t = c.target.klub + " " + c.target.kadencja_ef;
+            c.cumulativeRight = cumulativePerTerm[t] || 0;
+            cumulativePerTerm[t] = (cumulativePerTerm[t] || 0) + c.value;
+          })
+          .value();
+
+        cumulativePerTerm = {};
+        _(transitionLinks)
+          .sortBy("target.y")
+          .forEach(function (c) {
+            t = c.source.klub + " " + c.source.kadencja_ef;
+            c.cumulativeLeft = cumulativePerTerm[t] || 0;
+            cumulativePerTerm[t] = (cumulativePerTerm[t] || 0) + c.value;
+          })
+          .value();
 
         flows.attr("d", function (c) {
           var x1 = c.source.x + barWidth;
@@ -192,6 +210,8 @@ function main (partyCount, transitionLinks) {
                + " " + (x2 - controlDist) + "," + y2
                + " " + x2 + "," + y2;
         });
+
+        d.dragged = false;
       })
 
     bars.call(drag);
