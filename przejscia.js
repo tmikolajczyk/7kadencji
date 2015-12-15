@@ -132,7 +132,11 @@ function main (partyCount, transitionLinks) {
            + " " + x1 + "," + (y1 + v)
            + "Z";
     })
-    .style("fill", function (d) { return d.target.kolor; })
+    .style("fill", function (d) {
+      return d3.scale.linear()
+        .domain([0, 1])
+        .range([d.source.kolor, d.target.kolor])(0.5);
+    })
     .on("mouseover", function (d) {
       d3.select(this).style("opacity", 0.7);
       tooltip.show(
