@@ -27,7 +27,7 @@
 
 .flow {
     opacity: 0.3;
-    fill: none;
+    stroke: none;
 }
 
 .kadencja {

@@ -118,16 +118,21 @@ function main (partyCount, transitionLinks) {
     .attr("class", "flow")
     .attr("d", function (d) {
       var x1 = d.source.x + barWidth;
-      var y1 = d.source.y + scaleY(d.cumulativeLeft) - scaleY(0) + (scaleY(d.value) - scaleY(0)) / 2;
+      var y1 = d.source.y + scaleY(d.cumulativeLeft) - scaleY(0);
       var x2 = d.target.x;
-      var y2 = d.target.y + scaleY(d.cumulativeRight) - scaleY(0) + (scaleY(d.value) - scaleY(0)) / 2;
+      var y2 = d.target.y + scaleY(d.cumulativeRight) - scaleY(0);
+      var v = scaleY(d.value) - scaleY(0);
       return "M" + x1 + " " + y1
            + "C" + (x1 + controlDist) + "," + y1
            + " " + (x2 - controlDist) + "," + y2
-           + " " + x2 + "," + y2;
+           + " " + x2 + "," + y2
+           + "v" + v
+           + "C" + (x2 - controlDist) + "," + (y2 + v)
+           + " " + (x1 + controlDist) + "," + (y1 + v)
+           + " " + x1 + "," + (y1 + v)
+           + "Z";
     })
-    .style("stroke", function (d) { return d.target.kolor; })
-    .style("stroke-width", function (d) { return scaleY(d.value) - scaleY(0); })
+    .style("fill", function (d) { return d.target.kolor; })
     .on("mouseover", function (d) {
       d3.select(this).style("opacity", 0.7);
       tooltip.show(
@@ -200,15 +205,21 @@ function main (partyCount, transitionLinks) {
           })
           .value();
 
-        flows.attr("d", function (c) {
-          var x1 = c.source.x + barWidth;
-          var y1 = c.source.y + scaleY(c.cumulativeLeft) - scaleY(0) + (scaleY(c.value) - scaleY(0)) / 2;
-          var x2 = c.target.x;
-          var y2 = c.target.y + scaleY(c.cumulativeRight) - scaleY(0) + (scaleY(c.value) - scaleY(0)) / 2;
+        flows.attr("d", function (d) {
+          var x1 = d.source.x + barWidth;
+          var y1 = d.source.y + scaleY(d.cumulativeLeft) - scaleY(0);
+          var x2 = d.target.x;
+          var y2 = d.target.y + scaleY(d.cumulativeRight) - scaleY(0);
+          var v = scaleY(d.value) - scaleY(0);
           return "M" + x1 + " " + y1
                + "C" + (x1 + controlDist) + "," + y1
                + " " + (x2 - controlDist) + "," + y2
-               + " " + x2 + "," + y2;
+               + " " + x2 + "," + y2
+               + "v" + v
+               + "C" + (x2 - controlDist) + "," + (y2 + v)
+               + " " + (x1 + controlDist) + "," + (y1 + v)
+               + " " + x1 + "," + (y1 + v)
+               + "Z";
         });
 
         d.dragged = false;
