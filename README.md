@@ -4,7 +4,7 @@
   * Tomasz Mikołajczyk - dane
   * [Piotr Migdał](http://p.migdal.pl/) - wizualizacja
 * Interaktywna wersja: http://mikolajjj.github.io/7kadencji/
-* Screenshot (`przeplywy.html`):
+* Screenshot:
 
 ![Przepływy członkowska w 7 i pół kadencjach polskiego sejmu](screenshot.png)
 
