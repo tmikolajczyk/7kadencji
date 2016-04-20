@@ -1,4 +1,9 @@
-# 7kadencji
+# 7 i pół kadencji polskiego sejmu - wizualizacja przepływów
+
+Screenshot (`przeplywy.html`):
+
+![Przepływy członkowska w 7 i pół kadencjach polskiego sejmu](screenshot.png)
+
 
 ## Materiały
 
