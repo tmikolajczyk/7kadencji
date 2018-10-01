@@ -1,0 +1,52 @@
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
+
+.node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .2;
+}
+
+.link:hover {
+  stroke-opacity: .5;
+}
+
+.bar {
+    opacity: 0.7;
+    stroke: #000;
+    stroke-width: 1px;
+}
+
+.flow {
+    opacity: 0.3;
+    stroke: none;
+}
+
+.kadencja {
+    font-family: sans-serif;
+    font-size: 12px;
+    text-anchor: middle;
+    cursor: default;
+}
+
+div.tooltip
+{
+    position: absolute;
+    text-align: left;
+    padding: 8px;
+    font: 12px sans-serif;
+    background: #000;
+    color: #ddd;
+    border: solid 1px #aaa;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 10;
+}
